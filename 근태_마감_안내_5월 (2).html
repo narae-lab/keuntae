@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5월 근태 마감 안내 — 엠즈씨드 HR팀</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Apple SD Gothic Neo', '맑은 고딕', sans-serif; background: #f5f5f3; color: #1a1a1a; font-size: 14px; line-height: 1.6; padding: 32px 16px 60px; }
+
+  .container { max-width: 600px; margin: 0 auto; }
+
+  /* ── 로고 ── */
+  .logo { display: flex; align-items: center; gap: 6px; margin-bottom: 20px; }
+  .logo-mark { width: 32px; height: 32px; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  .logo-mark svg { width: 20px; height: 20px; }
+  .logo-text { font-size: 16px; font-weight: 800; color: #1a1a1a; letter-spacing: -0.5px; }
+  .logo-text sup { font-size: 9px; font-weight: 700; vertical-align: super; }
+
+  /* ── 히어로 (검정 바 — 체크리스트 month-info 동일) ── */
+  .hero { background: #1a1a1a; color: #fff; border-radius: 10px; padding: 20px 22px; margin-bottom: 16px; }
+  .hero-badge { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: #aaa; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; margin-bottom: 10px; }
+  .hero h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .hero h1 span { color: #ffc800; }
+  .hero-sub { font-size: 12px; color: #aaa; margin-bottom: 16px; }
+
+  /* ── CTA 버튼 ── */
+  .cta-btn { display: inline-flex; align-items: center; gap: 8px; background: #2d7d46; color: #fff; text-decoration: none; font-size: 14px; font-weight: 700; padding: 11px 22px; border-radius: 8px; transition: background 0.15s; }
+  .cta-btn:hover { background: #235e35; }
+  .cta-btn .arr { font-size: 16px; }
+
+  /* ── 카드 공통 (체크리스트 .section 동일) ── */
+  .card { background: #fff; border-radius: 10px; border: 1px solid #e8e8e8; padding: 16px 18px; margin-bottom: 14px; }
+  .card-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 14px; }
+  .card-num { background: #e6f4ec; color: #2d7d46; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 99px; }
+
+  /* ── 마감일 ── */
+  .deadline-date { font-size: 20px; font-weight: 700; color: #1a1a1a; margin-bottom: 14px; }
+  .deadline-date span { color: #e53e3e; }
+  .deadline-label { font-size: 11px; color: #888; margin-bottom: 2px; }
+
+  /* ── 테이블 ── */
+  .offtable { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px; }
+  .offtable th { background: #1a1a1a; color: #fff; padding: 9px 14px; text-align: center; font-weight: 700; }
+  .offtable th:first-child { border-radius: 6px 0 0 0; }
+  .offtable th:last-child  { border-radius: 0 6px 0 0; }
+  .offtable td { padding: 9px 14px; text-align: center; border-bottom: 1px solid #f0f0f0; color: #333; }
+  .offtable tr:last-child td { border-bottom: none; font-weight: 700; background: #f0f7f3; color: #2d7d46; }
+  .offtable-note { font-size: 12px; color: #888; margin-top: 8px; }
+
+  /* ── 필수 확인사항 ── */
+  .check-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .check-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.65; color: #2a2a2a; }
+  .check-list li::before { content: '✓'; color: #2d7d46; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .check-list li strong { color: #1a1a1a; }
+
+  /* ── 특이사항 ── */
+  .special-card { background: #fff; border-radius: 10px; border: 1px solid #e8e8e8; border-left: 3px solid #e65100; padding: 16px 18px; margin-bottom: 14px; }
+  .special-title { font-size: 13px; font-weight: 700; color: #e65100; margin-bottom: 10px; }
+  .special-item { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.65; margin-bottom: 8px; color: #2a2a2a; }
+  .special-item:last-child { margin-bottom: 0; }
+  .special-item .tag { background: #fff3e0; color: #e65100; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; margin-top: 2px; white-space: nowrap; }
+
+  /* ── 푸터 ── */
+  .footer-card { text-align: center; font-size: 12px; color: #aaa; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- 로고 -->
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <text x="3" y="17" font-size="14" font-weight="900" fill="white" font-family="sans-serif">m</text>
+      </svg>
+    </div>
+    <div class="logo-text">m<sup>'s</sup>seed</div>
+  </div>
+
+  <!-- 히어로 -->
+  <div class="hero">
+    <div class="hero-badge">📋 근태 마감 안내</div>
+    <h1><span>5월</span> 근태 마감 안내</h1>
+    <div class="hero-sub">마감 전 반드시 체크리스트를 확인해 주세요!</div>
+    <a href="./근태_마감_체크리스트_5월.html" target="_blank" class="cta-btn">
+      📋 5월 근태 마감 체크리스트 <span class="arr">→</span>
+    </a>
+  </div>
+
+  <!-- 마감일 + 휴무일수 -->
+  <div class="card">
+    <div class="card-title"><div class="card-num">01</div> 마감 일자 및 당월 휴무일수</div>
+    <div class="deadline-row" style="margin-bottom:18px;">
+      <div>
+        <div class="deadline-label">마감 일자</div>
+        <div class="deadline-date">2026/06/02<span>(화)</span> 오전 10시</div>
+      </div>
+    </div>
+    <table class="offtable">
+      <thead><tr><th>기간</th><th>휴무일수</th></tr></thead>
+      <tbody>
+        <tr><td>5/1</td><td>1일 (고정)</td></tr>
+        <tr><td>5/2 ~ 5/31</td><td>12일</td></tr>
+        <tr><td>합계</td><td>13일</td></tr>
+      </tbody>
+    </table>
+    <div class="offtable-note">* 중도 입/퇴사자·휴복직자의 경우 첨부된 계산식으로 반영</div>
+  </div>
+
+  <!-- 필수 확인사항 -->
+  <div class="card">
+    <div class="card-title"><div class="card-num">02</div> 필수 확인사항</div>
+    <ul class="check-list">
+      <li>휴무일수 미만 → <strong>휴일근로(D) 반영 필수</strong> (미반영 시 수당 지급 불가)</li>
+      <li>휴무일수 초과 → <strong>연차 or 무급휴직 반영 필수</strong></li>
+      <li>중도 입/퇴사·휴복직자 → 첨부 계산식으로 휴무일수 산정</li>
+      <li>경조/유급휴가 → OFF 아닌 <strong>유급으로 반영</strong></li>
+      <li>연차로 인한 휴일근로 발생 → 연차 취소 + 실적 조정</li>
+      <li>파트타이머 → 퇴근시간 조정, 실근무시간 정상 반영 여부 확인</li>
+    </ul>
+  </div>
+
+  <!-- 이번달 특이사항 -->
+  <div class="special-card">
+    <div class="special-title">⚠️ 이번달 특이사항</div>
+    <div class="special-item">
+      <span class="tag">① 5/1</span>
+      <span>5/1 출근자는 전원 <strong>D근로</strong>로 반영해 주세요</span>
+    </div>
+    <div class="special-item">
+      <span class="tag">② 파트타이머</span>
+      <span>5월 공휴일 <strong>(1일·5일·24일·25일)</strong> 출근자는 반드시 <strong>D코드</strong>로 근태 등록</span>
+    </div>
+  </div>
+
+  <!-- 푸터 -->
+  <div class="footer-card">최종 업데이트: 2026.05.19 &nbsp;|&nbsp; HR팀 정나래</div>
+
+</div>
+</body>
+</html>
