@@ -204,6 +204,8 @@
     <h1>근태·휴무 검증기</h1>
     <p>근태 오류 및 휴무일수, 중도입·퇴사자(휴·복직자) 휴무 계산을 할 수 있습니다.</p>
   </header>
+  <nav aria-label="자료실 메뉴" style="display:flex;justify-content:flex-end;margin:0 0 18px"><a href="./휴복직_기안_도우미.html" style="display:inline-block;padding:11px 16px;border:1px solid #dbe1e8;border-radius:10px;background:#fff;color:#3b4d8f;font-weight:700;text-decoration:none">자료실·기안 작성 →</a></nav>
+
 
   <div class="tabs" role="tablist">
     <button data-on="geuntae" class="on" onclick="switchTab('geuntae')">근태 검증</button>
@@ -711,11 +713,11 @@ function fullBase(y,m){
   }
   return {base:w+h, w, h, dim};
 }
-function parseWorkDate(s){ // "2026.04.01" → {y,m,d, key}
-  const t=String(s).trim().split('.');
-  if(t.length<3) return null;
-  const y=+t[0],m=+t[1],d=+t[2];
-  if(!y||!m||!d) return null;
+function parseWorkDate(s){ // Strict e-HR date validation.
+  const match=String(s).trim().match(/^(\d{4})[.\/-](\d{1,2})[.\/-](\d{1,2})\.?$/);
+  if(!match)return null;
+  const [y,m,d]=match.slice(1).map(Number),date=new Date(y,m-1,d);
+  if(date.getFullYear()!==y||date.getMonth()!==m-1||date.getDate()!==d)return null;
   return {y,m,d,key:ymd(y,m,d), wd:new Date(y,m-1,d).getDay()};
 }
 
@@ -762,13 +764,16 @@ function findCols(header){
 }
 
 function parseRows(rows, fname){
+  root.querySelector('#resultCard').style.display='none';
+  root.querySelector('#controls').style.display='none';
+  root.querySelector('#loadInfo').style.display='none';
   if(!rows.length){alert('빈 파일입니다.');return;}
   const idx=findCols(rows[0]);
   if(idx.n==null && idx.nFallback!=null) idx.n=idx.nFallback;
   if(idx.sab==null||idx.n==null||idx.date==null){
     alert('필요한 열(사번·근무일·근무시간)을 찾지 못했습니다. 양식을 확인하세요.');return;
   }
-  const map=new Map();
+  const map=new Map(),seenDates=new Set();
   const monthCount={};
   for(let r=1;r<rows.length;r++){
     const row=rows[r];
@@ -779,6 +784,11 @@ function parseRows(rows, fname){
     const n=String(row[idx.n]??'').trim();
     const j=idx.j!=null?String(row[idx.j]??'').trim():'';
     const wd=parseWorkDate(row[idx.date]);
+    if(!wd){alert((r+1)+'행 근무일이 올바르지 않습니다. 파일을 확인해 주세요.');return;}
+    if(wd.y!==2026){alert('휴무 검증의 공휴일 자료는 2026년 기준입니다. 다른 연도는 검증할 수 없습니다.');return;}
+    const unique=sab+'|'+wd.key;
+    if(seenDates.has(unique)){alert((r+1)+'행에 같은 사번·근무일이 중복되었습니다. 파일을 확인해 주세요.');return;}
+    seenDates.add(unique);
     if(!map.has(sab)) map.set(sab,{sab,name,e,rows:[]});
     map.get(sab).rows.push({n,wd,j});
     if(wd){const k=`${wd.y}-${String(wd.m).padStart(2,'0')}`;monthCount[k]=(monthCount[k]||0)+1;}
@@ -902,14 +912,12 @@ root.querySelector('#dlHyumu').addEventListener('click',()=>{
 
   /* ---------- 하이브리드 날짜 입력 (hr_calculator 동일 방식) ---------- */
   function normalizeDateValue(v){
-    if(!v) return '';
-    const digits=String(v).replace(/\D/g,'').slice(0,8);
-    if(digits.length!==8) return '';
-    const y=+digits.slice(0,4), m=+digits.slice(4,6), d=+digits.slice(6,8);
-    const dt=new Date(y,m-1,d);
-    if(dt.getFullYear()!==y || dt.getMonth()!==m-1 || dt.getDate()!==d) return '';
-    return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-  }
+ const raw=String(v||'').trim().replace(/\s/g,'');if(!raw)return '';
+ if(!/^(?:\d{8}|\d{4}[.\/-]\d{1,2}[.\/-]\d{1,2}\.?)$/.test(raw))return '';
+ const parts=/^\d{8}$/.test(raw)?[raw.slice(0,4),raw.slice(4,6),raw.slice(6,8)]:raw.replace(/\.$/,'').split(/[.\/-]/);
+ const [y,m,d]=parts.map(Number),dt=new Date(y,m-1,d);
+ return y>=1900&&y<=2200&&dt.getFullYear()===y&&dt.getMonth()===m-1&&dt.getDate()===d?y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0'):'';
+}
   function parseD(v){
     const n=normalizeDateValue(v);
     if(!n) return null;
@@ -1009,6 +1017,7 @@ root.querySelector('#dlHyumu').addEventListener('click',()=>{
       const id=btn.dataset.calc;
       const card=wrap.querySelector('.midcase[data-id="'+id+'"]');
       const c=cases.find(function(x){return x.id===id;});
+      card.querySelector('.midout').classList.remove('show');
       const ymv=ymSel.value.split('-'); const Y=+ymv[0], M=+ymv[1];
       const v={};
       c.fields.forEach(function(f){
@@ -1016,8 +1025,14 @@ root.querySelector('#dlHyumu').addEventListener('click',()=>{
         const nv=normalizeDateValue(el.value);
         v[f[2]]= nv?new Date(nv+'T00:00:00'):null;
       });
-      const hol=parseInt(card.querySelector('[data-k="hol"]').value,10)||0;
+      const holRaw=card.querySelector('[data-k="hol"]').value;
+      const hol=holRaw===''?0:Number(holRaw);
+      if(!Number.isInteger(hol)||hol<0){alert('공휴일 수는 0 이상의 정수로 입력해 주세요.');return;}
+      if(c.fields.some(f=>!v[f[2]])){alert('올바른 날짜를 입력해 주세요.');return;}
+      if(c.fields.some(f=>v[f[2]].getFullYear()!==Y||v[f[2]].getMonth()+1!==M)){alert('모든 날짜는 선택한 기준 연월에 속해야 합니다.');return;}
+      if(v.a&&v.b&&v.b<v.a){alert('종료일이 시작일보다 빠릅니다.');return;}
       const jaejik=c.calc(Y,M,v);
+      if(hol>jaejik){alert('재직 중 공휴일 수는 재직일수를 넘을 수 없습니다.');return;}
       const out=card.querySelector('[data-out="'+id+'"]');
       if(jaejik==null){ alert('날짜를 입력하세요.'); return; }
       if(jaejik<0){ alert('날짜를 확인하세요. (재직일수가 음수입니다)'); return; }
