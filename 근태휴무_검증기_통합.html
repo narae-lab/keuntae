@@ -196,21 +196,24 @@
 #ruleModalClose{position:absolute; top:16px; right:18px; cursor:pointer; font-size:18px; color:#888; background:none; border:0;}
 #ruleModalWrap{position:relative;}
 
+
+.mid-tip-row{margin:16px 0}.mid-tip-row:has(.tab-bubble.hide){display:none}.mid-tip-row .tab-bubble{position:relative;right:auto;bottom:auto;transform:none;display:block;width:fit-content;max-width:100%;margin-left:auto;animation:none}.mid-tip-row .tab-bubble.hide{display:none}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <nav aria-label="자료실 메뉴" style="display:flex;justify-content:flex-end;margin:0 0 18px"><a href="./휴복직_기안_도우미.html" style="display:inline-block;padding:11px 16px;border:1px solid #dbe1e8;border-radius:10px;background:#fff;color:#3b4d8f;font-weight:700;text-decoration:none">자료실·기안 작성 →</a></nav>
   <header class="top">
     <h1>근태·휴무 검증기</h1>
     <p>근태 오류 및 휴무일수, 중도입·퇴사자(휴·복직자) 휴무 계산을 할 수 있습니다.</p>
   </header>
-  <nav aria-label="자료실 메뉴" style="display:flex;justify-content:flex-end;margin:0 0 18px"><a href="./휴복직_기안_도우미.html" style="display:inline-block;padding:11px 16px;border:1px solid #dbe1e8;border-radius:10px;background:#fff;color:#3b4d8f;font-weight:700;text-decoration:none">자료실·기안 작성 →</a></nav>
 
 
+  <div class="mid-tip-row"><span class="tab-bubble" id="midBubble"><b><span class="nw">육아휴직 분할 계산?</span> <span class="nw">연차 15개 쓰면 휴무 몇 개?</span></b><br><span class="tb-sub">👇 이 탭에서 확인할 수 있어요!</span><span class="tb-close" id="midBubbleClose" role="button" aria-label="안내 닫기">×</span></span></div>
   <div class="tabs" role="tablist">
     <button data-on="geuntae" class="on" onclick="switchTab('geuntae')">근태 검증</button>
     <button data-on="hyumu" onclick="switchTab('hyumu')">휴무 검증</button>
-    <button data-on="mid" onclick="switchTab('mid')">중도입·퇴사자(휴·복직자) 휴무 계산<span class="tab-bubble" id="midBubble"><b><span class="nw">육아휴직 분할 계산?</span> <span class="nw">연차 15개 쓰면 휴무 몇 개?</span></b><br><span class="tb-sub">👇 이 탭에서 확인할 수 있어요!</span><span class="tb-close" id="midBubbleClose" role="button" aria-label="안내 닫기">×</span></span></button>
+    <button data-on="mid" onclick="switchTab('mid')">중도입·퇴사자(휴·복직자) 휴무 계산</button>
   </div>
   <script>
   /* 휴·복직 탭 말풍선: 탭을 열거나 ×를 누르면 숨김 (새로 접속하면 다시 표시) */
