@@ -224,7 +224,7 @@
   <section class="panel" id="panel-birth" role="tabpanel">
     <div class="card">
       <h2>출산휴가 계산</h2>
-      <p class="sub">단태아 90일 / 미숙아 100일 / 다태아 120일 · 사내 권장 확보일수 기준 안내</p>
+      <p class="sub">단태아 90일 / 미숙아 100일 / 다태아 120일</p>
       <div class="note" style="margin-bottom:18px;">
         ※ 법정 기준은 출산 후 <b>45일(다태아 60일)</b> 확보입니다. 다만 출산예정일은 앞당겨질 수 있어,
         <b>5일 여유</b>를 두어 <b>50일(다태아 65일)</b> 기준으로 안내하고 있습니다.
@@ -656,6 +656,44 @@ document.getElementById('simCalc').addEventListener('click',()=>{
   document.getElementById('sEnd').textContent=fmt(found.end);
   document.getElementById('simResult').classList.add('show');
 });
+</script>
+
+<script id="draft-calculator-bridge">
+function calculatedDate(id){const m=document.getElementById(id).textContent.match(/\d{4}\.\s*\d{2}\.\s*\d{2}/);return m?normalizeDateValue(m[0]):'';}
+function addDraftLink(container,type,start,end,due,from){
+ if(!start)return;
+ const params=new URLSearchParams({type,start,from});if(end)params.set('end',end);if(due)params.set('due',due);
+ const target=new URL('./휴복직_기안_도우미.html',location.href);target.hash=params.toString();
+ const link=document.createElement('a');link.className='btn draft-link';link.style.cssText='margin-top:14px;text-decoration:none;text-align:center;justify-content:center';link.href=target.href;link.textContent='이 기간으로 기안 작성하기 →';
+ if(from==='annual')link.textContent='휴직 시작일로 기안 작성하기 →';
+ container.appendChild(link);
+}
+for(const [button,result,type,a,b,due,from] of [
+ ['annCalc','annResult','child','annLeaveStart',null,null,'annual'],
+ ['birthCalc','birthResult','birth','bStart','bEnd','dueDate','birth'],
+ ['birthBack','birthBackResult','birth','bbStart','bbEnd','dueDate2','birth'],
+ ['simCalc','simResult','child','sStart','sEnd',null,'simulation']
+]){
+ document.getElementById(button).addEventListener('click',()=>{
+  const box=document.getElementById(result);box.querySelectorAll('.draft-link').forEach(x=>x.remove());
+  if(!box.classList.contains('show'))return;
+  if(from==='annual'&&document.getElementById('annLeaveRow').style.display==='none')return;
+  addDraftLink(box,type,calculatedDate(a),b?calculatedDate(b):'',due?normalizeDateValue(document.getElementById(due).value):'',from);
+ });
+}
+document.getElementById('childCalc').addEventListener('click',()=>{
+ if(!document.getElementById('childResult').classList.contains('show'))return;
+ const rows=[...roundsWrap.querySelectorAll('.round')].filter(r=>r.querySelector('.rStart').value.trim()||r.querySelector('.rEnd').value.trim());
+ document.querySelectorAll('#childRows .rrow').forEach((row,i)=>{
+  if(!rows[i])return;
+  row.style.flexWrap='wrap';const holder=document.createElement('div');holder.style.width='100%';
+  addDraftLink(holder,'child',normalizeDateValue(rows[i].querySelector('.rStart').value),normalizeDateValue(rows[i].querySelector('.rEnd').value),'','round');row.appendChild(holder);
+ });
+});
+for(const [input,results] of [['annLeave',['annResult']],['annHoliday',['annResult']],['annStart',['annResult']],['startDate',['birthResult']],['dueDate',['birthResult']],['dueDate2',['birthBackResult']],['birthType',['birthResult','birthBackResult']]]){
+ for(const event of ['input','change'])document.getElementById(input).addEventListener(event,()=>results.forEach(id=>document.getElementById(id).classList.remove('show')));
+}
+roundsWrap.addEventListener('change',invalidateChildResult);
 </script>
 </body>
 </html>
