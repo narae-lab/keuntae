@@ -407,6 +407,15 @@ function switchTab(name){
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on', b.dataset.on===name));
   document.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('on', p.id==='tab-'+name));
 }
+/* 주소 뒤 #mid / #hyumu / #geuntae 로 해당 탭을 바로 열기 */
+(function(){
+  function openFromHash(){
+    var h=(location.hash||'').replace('#','');
+    if(h==='mid'||h==='hyumu'||h==='geuntae') switchTab(h);
+  }
+  openFromHash();
+  window.addEventListener('hashchange',openFromHash);
+})();
 </script>
 <script>
 (function(){
