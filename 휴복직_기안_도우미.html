@@ -134,9 +134,9 @@ function officialPeriod(a,b){
  const C=Math.round((next-anchor)/MS),units=M*1000+Math.floor(D*1000/C);
  return {months:M,D,C,frac:Math.floor(D*1000/C)/1000,sum:units/1000,units,actualDays:Math.round((end-s)/MS)+1};
 }
-function months(a,b){const r=officialPeriod(a,b);if(!r)return '';const label=[r.months?r.months+'개월':'',r.D?r.D+'일':''].filter(Boolean).join(' ')||'0일';return r.months?label+' (총 '+r.actualDays+'일)':r.actualDays+'일';}
-function lengthFor(a,b,typ){if(!a||!b||days(a,b)<1)return '';return typ.includes('출산전후휴가')&&!typ.includes('+')?days(a,b)+'일':months(a,b)}
-function formLine(name,a,b){if(!a||!b)return name+' : 날짜 미입력';let l=name.includes('출산전후')?days(a,b)+'일':months(a,b);return name+' : '+fmt(a)+' ~ '+fmt(b)+' ('+l+')'}
+function months(a,b){const r=officialPeriod(a,b);return r?r.sum+'개월':'';}
+function lengthFor(a,b,typ){if(!a||!b||days(a,b)<1)return '';return /출산전후휴가|임신기\s*단축근로/.test(typ)&&!typ.includes('+')?days(a,b)+'일':months(a,b)}
+function formLine(name,a,b){if(!a||!b)return name+' : 날짜 미입력';const l=lengthFor(a,b,name);return name+' : '+fmt(a)+' ~ '+fmt(b)+' ('+l+')'}
 function isShort(o){return ['pregpaid','pregunpaid','childshort'].includes(o.form)}
 function isMaternity(o){return ['pregpaid','pregunpaid','childshort'].includes(o.form)||/육아휴직|출산전후휴가/.test(o.typ)}
 function isPregnancy(o){return ['pregpaid','pregunpaid'].includes(o.form)||/출산전후휴가/.test(o.typ)}
